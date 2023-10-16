@@ -1,0 +1,25 @@
+version: "3.5"
+services:
+  mock-dynamodb:
+    container_name: "mock-dynamodb"
+    image: localstack/localstack
+    ports:
+      - "4566:4566" # LocalStack Gateway
+      - "4510-4559:4510-4559" # external services port range
+    environment:
+      - DEBUG=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - ALLOW_NONSTANDARD_REGIONS=1
+      - DYNAMODB_IN_MEMORY=1
+    volumes:
+      - "$PWD/mock-dynamodb/:/etc/localstack/init/ready.d/"
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      live-code-interview:
+        aliases:
+          - mock-dynamodb
+
+networks:
+  live-code-interview:
+    name: live-code-interview
